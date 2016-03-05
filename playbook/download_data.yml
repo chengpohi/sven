@@ -1,0 +1,14 @@
+---
+- hosts: sven 
+  tasks:
+   - name: "shutdown elasticsearch"
+     command: curl -XPOST 'http://localhost:9200/_shutdown'
+   - name: "rm old file"
+     command: rm /usr/local/elasticsearch-1.7.1/data/secdata.tgz 
+     ignore_errors: true
+   - name: "compress file"
+     command: tar -zcvf /usr/local/elasticsearch-1.7.1/data/secdata.tgz /usr/local/elasticsearch-1.7.1/data/secdata/ 
+   - name: "fetch data from remote"
+     fetch: src=/usr/local/elasticsearch-1.7.1/data/secdata.tgz dest=/Users/xiachen/Documents/secdata.tgz flat=yes
+   - name: "restart elasticsearch"
+     command: /usr/local/elasticsearch-1.7.1/bin/elasticsearch -d
